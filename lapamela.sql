@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS lapamela;
+CREATE DATABASE lapamela;
