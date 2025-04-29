@@ -22,6 +22,15 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/productos">Productos</router-link>
             </li>
+            <li class="nav-item" v-if="logueado">
+  <form method="POST" action="/logout">
+    <input type="hidden" name="_token" :value="csrfToken">
+    <button type="submit" class="btn btn-danger ms-3">
+      Cerrar sesión
+    </button>
+  </form>
+</li>
+
             <li class="nav-item">
               <!-- Icono carrito -->
               <button 
@@ -105,6 +114,20 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+
+
+// Detectar si el usuario está autenticado
+const logueado = ref(false);
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+// Comprobar estado de sesión al cargar
+fetch('/api/user')
+  .then(res => {
+    logueado.value = res.ok;
+  })
+  .catch(() => {
+    logueado.value = false;
+  });
 
 const carrito = ref([])
 
