@@ -33,7 +33,7 @@
 
             <li class="nav-item">
               <!-- Icono carrito -->
-              <button
+              <button 
                 class="btn btn-outline-light position-relative ms-3"
                 data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasCarrito"
@@ -50,7 +50,7 @@
     </nav>
 
     <!-- Contenido principal -->
-    <main class="flex-fill">
+    <main class="flex-fill container my-4">
       <router-view :agregarAlCarrito="agregarAlCarrito" />
     </main>
 
