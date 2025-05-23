@@ -5,12 +5,7 @@
       <div class="container">
         <router-link class="navbar-brand" to="/">La Pamela</router-link>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -23,23 +18,15 @@
               <router-link class="nav-link" to="/productos">Productos</router-link>
             </li>
             <li class="nav-item" v-if="logueado">
-  <form method="POST" action="/logout">
-    <input type="hidden" name="_token" :value="csrfToken">
-    <button type="submit" class="btn btn-danger ms-3">
-      Cerrar sesión
-    </button>
-  </form>
-</li>
-
+              <form method="POST" action="/logout">
+                <input type="hidden" name="_token" :value="csrfToken">
+                <button type="submit" class="btn btn-danger ms-3">Cerrar sesión</button>
+              </form>
+            </li>
             <li class="nav-item">
-              <!-- Icono carrito -->
-              <button 
-                class="btn btn-outline-light position-relative ms-3"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasCarrito"
-              >
+              <button class="btn btn-outline-light position-relative ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito">
                 <i class="bi bi-cart3"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                <span v-if="carritoTotal" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   {{ carritoTotal }}
                 </span>
               </button>
@@ -58,27 +45,16 @@
     <footer class="footer mt-auto bg-dark text-light py-4">
       <div class="container text-center">
         <div class="mb-3">
-          <a href="https://www.instagram.com" target="_blank" class="text-light mx-3">
-            <i class="bi bi-instagram" style="font-size: 1.5rem;"></i>
-          </a>
-          <a href="https://www.facebook.com" target="_blank" class="text-light mx-3">
-            <i class="bi bi-facebook" style="font-size: 1.5rem;"></i>
-          </a>
-          <a href="https://wa.me/123456789" target="_blank" class="text-light mx-3">
-            <i class="bi bi-whatsapp" style="font-size: 1.5rem;"></i>
-          </a>
+          <a href="https://www.instagram.com" target="_blank" class="text-light mx-3"><i class="bi bi-instagram" style="font-size: 1.5rem;"></i></a>
+          <a href="https://www.facebook.com" target="_blank" class="text-light mx-3"><i class="bi bi-facebook" style="font-size: 1.5rem;"></i></a>
+          <a href="https://wa.me/123456789" target="_blank" class="text-light mx-3"><i class="bi bi-whatsapp" style="font-size: 1.5rem;"></i></a>
         </div>
         <small>&copy; 2025 La Pamela. Todos los derechos reservados.</small>
       </div>
     </footer>
 
     <!-- Carrito Offcanvas -->
-    <div
-      class="offcanvas offcanvas-end"
-      tabindex="-1"
-      id="offcanvasCarrito"
-      aria-labelledby="offcanvasCarritoLabel"
-    >
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCarrito" aria-labelledby="offcanvasCarritoLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasCarritoLabel">Tu Carrito</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
@@ -87,25 +63,24 @@
         <div v-if="carrito.length === 0">
           <p>El carrito está vacío.</p>
         </div>
-        <ul class="list-group" v-else>
-          <li
-            class="list-group-item d-flex justify-content-between align-items-center"
-            v-for="item in carrito"
-            :key="item.id"
-          >
-            <span>{{ item.nombre }} (x{{ item.cantidad }})</span>
-            <span>{{ (item.precio * item.cantidad).toFixed(2) }} €</span>
-          </li>
-        </ul>
-        <div v-if="carrito.length > 0" class="mt-3 text-end">
-          <h5>Total: {{ carritoTotalPrecio.toFixed(2) }} €</h5>
-          <router-link
-            to="/checkout"
-            class="btn btn-success mt-3 w-100"
-            data-bs-dismiss="offcanvas"
-          >
-            Ir a pagar
-          </router-link>
+        <div v-else>
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center" v-for="item in carrito" :key="item.id">
+              <div>
+                {{ item.nombre }} <br />
+                <small>x{{ item.cantidad }} - {{ (item.precio * item.cantidad).toFixed(2) }} €</small>
+              </div>
+              <button class="btn btn-sm btn-outline-danger" @click="eliminarProducto(item.id)">🗑</button>
+            </li>
+          </ul>
+          <div class="mt-3 text-end">
+            <h5>Total: {{ carritoTotalPrecio.toFixed(2) }} €</h5>
+            <button class="btn btn-outline-secondary w-100 mt-2" @click="vaciarCarrito">Vaciar carrito</button>
+            <button class="btn btn-success mt-3 w-100" data-bs-dismiss="offcanvas" @click="irACheckout">
+  Ir a pagar
+</button>
+
+          </div>
         </div>
       </div>
     </div>
@@ -113,14 +88,17 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue';
 
-
-// Detectar si el usuario está autenticado
 const logueado = ref(false);
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
-// Comprobar estado de sesión al cargar
+function irACheckout() {
+  router.push('/checkout')
+}
+
 fetch('/api/user')
   .then(res => {
     logueado.value = res.ok;
@@ -129,23 +107,43 @@ fetch('/api/user')
     logueado.value = false;
   });
 
-const carrito = ref([])
+const carrito = ref([]);
+
+// Cargar carrito desde localStorage
+onMounted(() => {
+  const data = localStorage.getItem('carrito');
+  if (data) {
+    carrito.value = JSON.parse(data);
+  }
+});
+
+// Guardar carrito cada vez que cambia
+watch(carrito, () => {
+  localStorage.setItem('carrito', JSON.stringify(carrito.value));
+}, { deep: true });
 
 function agregarAlCarrito(producto) {
-  const encontrado = carrito.value.find((p) => p.id === producto.id)
+  const encontrado = carrito.value.find(p => p.id === producto.id);
   if (encontrado) {
-    encontrado.cantidad++
+    encontrado.cantidad++;
   } else {
-    carrito.value.push({ ...producto, cantidad: 1 })
+    carrito.value.push({ ...producto, cantidad: 1 });
   }
+}
+
+function eliminarProducto(id) {
+  carrito.value = carrito.value.filter(p => p.id !== id);
+}
+
+function vaciarCarrito() {
+  carrito.value = [];
 }
 
 const carritoTotal = computed(() =>
   carrito.value.reduce((total, item) => total + item.cantidad, 0)
-)
+);
 
 const carritoTotalPrecio = computed(() =>
   carrito.value.reduce((total, item) => total + item.precio * item.cantidad, 0)
-)
+);
 </script>
-
