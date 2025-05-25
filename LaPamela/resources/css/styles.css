@@ -1,86 +1,156 @@
 html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* 🔥 elimina scroll lateral por si acaso */
+}
+
+#app {
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+  body {
+  background-color: #f5f5f5;
+  font-family: 'Poppins', sans-serif;
+  color: #212529;
+  line-height: 1.6;
+}
+
+.navbar {
+  background: #1b1b1b;
+  border-bottom: 3px solid #ffc107;
+}
+
+.navbar-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  color: #ffc107 !important;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #ffc107 !important;
+}
+
+.card {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.btn-success, .btn-primary, .btn-outline-secondary {
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #198754;
+  transform: scale(1.05);
+}
+
+.fade-in {
+  animation: fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  #app {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .container {
-    flex: 1;
-  }
-  
-  .footer {
-    background: #212529;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    margin-top: auto;
-  }
-  .footer a {
-    transition: color 0.3s, transform 0.3s;
-  }
-  
-  .footer a:hover {
-    color: #ffc107; /* Amarillo dorado típico de la Semana Santa */
-    transform: scale(1.2);
-  }
-  
-body {
-    background: #fafafa;
-    font-family: 'Poppins', sans-serif;
-    color: #333;
-  }
-  
-  .navbar {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .navbar-brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    color: #f8f9fa;
-  }
-  
-  .nav-link {
-    font-weight: 600;
-  }
-  
-  h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
-    font-weight: bold;
-  }
-  
-  .btn-primary, .btn-success, .btn-outline-primary {
-    border-radius: 25px;
-    padding: 10px 25px;
-    font-size: 1.1rem;
-  }
-  
-  .card {
-    border: none;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.15);
-  }
-  
+}
+
+.footer {
+  background-color: #1b1b1b;
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #ccc;
+}
 
   
-  .fade-in {
-    animation: fadeIn 2s ease forwards;
-  }
   
-  @keyframes fadeIn {
-    0% {opacity: 0; transform: translateY(30px);}
-    100% {opacity: 1; transform: translateY(0);}
+.card-img-top {
+  height: 250px; /* o ajusta según lo que quede mejor */
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero {
+  width: 100%;
+  height: 100dvh; /* Altura completa en móviles */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-image: url('https://img.freepik.com/foto-gratis/multitud-disfrazada-semana-santa-capturada-sevilla_181624-15679.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+
+.home-landing {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+
+.hero .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.hero .content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 700px;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
   }
-  
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .hero .content {
+    padding: 1rem;
+  }
+}
