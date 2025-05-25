@@ -4,9 +4,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CustomRegisterController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\PedidoController;
+
+Route::post('/pedido', [PedidoController::class, 'procesar']);
 
 Route::post('/crear-sesion-stripe', [StripeController::class, 'checkout']);
-Route::view('/success', 'success');
+
 
 
 Route::get('/register', [CustomRegisterController::class, 'show'])->name('register');
