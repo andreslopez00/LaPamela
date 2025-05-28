@@ -50,12 +50,14 @@ async function realizarPago() {
   }
 
   // Guardar datos en localStorage para luego enviarlos al backend
-  localStorage.setItem('datosPedido', JSON.stringify({
-    nombre: nombre.value,
-    email: email.value,
-    direccion: direccion.value,
-    carrito: carrito.value
-  }))
+ localStorage.setItem('datosPedido', JSON.stringify({
+  nombre: nombre.value,
+  email: email.value,
+  direccion: direccion.value,
+  carrito: carrito.value,
+  total: total.value // 👈 esto faltaba
+}))
+
 
   const response = await fetch('/crear-sesion-stripe', {
     method: 'POST',

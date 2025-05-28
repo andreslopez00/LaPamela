@@ -11,27 +11,40 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-center">
-            <li class="nav-item">
-              <router-link class="nav-link" to="/">Inicio</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/productos">Productos</router-link>
-            </li>
-            <li class="nav-item" v-if="logueado">
-              <form method="POST" action="/logout">
-                <input type="hidden" name="_token" :value="csrfToken">
-                <button type="submit" class="btn btn-danger ms-3">Cerrar sesión</button>
-              </form>
-            </li>
-            <li class="nav-item">
-              <button class="btn btn-outline-light position-relative ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito">
-                <i class="bi bi-cart3"></i>
-                <span v-if="carritoTotal" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {{ carritoTotal }}
-                </span>
-              </button>
-            </li>
-          </ul>
+  <li class="nav-item">
+    <router-link class="nav-link" to="/">Inicio</router-link>
+  </li>
+  <li class="nav-item">
+    <router-link class="nav-link" to="/productos">Productos</router-link>
+  </li>
+
+  <li class="nav-item" v-if="logueado">
+    <router-link class="nav-link" to="/mis-pedidos">Mis pedidos</router-link>
+  </li>
+
+<li class="nav-item">
+  <router-link class="nav-link" to="/contacto">Contacto</router-link>
+</li>
+
+  <!-- Logout -->
+  <li class="nav-item" v-if="logueado">
+    <form method="POST" action="/logout">
+      <input type="hidden" name="_token" :value="csrfToken">
+      <button type="submit" class="btn btn-danger ms-3">Cerrar sesión</button>
+    </form>
+  </li>
+
+  <!-- Carrito -->
+  <li class="nav-item">
+    <button class="btn btn-outline-light position-relative ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito">
+      <i class="bi bi-cart3"></i>
+      <span v-if="carritoTotal" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ carritoTotal }}
+      </span>
+    </button>
+  </li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -85,6 +98,16 @@
         </div>
       </div>
     </div>
+    <!-- Botón de WhatsApp flotante -->
+<a
+  href="https://wa.me/34666666666?text=Hola%2C%20quiero%20hacer%20una%20consulta%20sobre%20un%20producto"
+  target="_blank"
+  class="btn btn-success position-fixed"
+  style="bottom: 20px; right: 20px; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; z-index: 1050;"
+>
+  <i class="bi bi-whatsapp" style="font-size: 1.5rem;"></i>
+</a>
+
   </div>
 </template>
 

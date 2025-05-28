@@ -10,22 +10,30 @@
 import { onMounted } from 'vue'
 
 onMounted(() => {
-  console.log('Enviando pedido...'); // 👈 verifica que esto se muestra
-
-  const datos = localStorage.getItem('datosPedido');
+  const datos = localStorage.getItem('datosPedido')
   if (datos) {
-    fetch('/pedido', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-      },
-      body: datos,
-    }).then(() => {
-      localStorage.removeItem('carrito');
-      localStorage.removeItem('datosPedido');
-    });
-  }
-});
+  const pedido = JSON.parse(datos);
+  const total = pedido.carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
 
+  fetch('/pedido', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+    },
+    body: JSON.stringify({
+      nombre: pedido.nombre,
+      email: pedido.email,
+      direccion: pedido.direccion,
+      carrito: pedido.carrito,
+      total: total,
+    }),
+  }).then(() => {
+    localStorage.removeItem('carrito');
+    localStorage.removeItem('datosPedido');
+  });
+}
+
+})
 </script>
+

@@ -14,9 +14,15 @@
         :key="producto.id"
       >
         <div class="card h-100">
-          <img :src="getImagenUrl(producto.imagen)" class="card-img-top" :alt="producto.nombre" />
+          <router-link :to="`/producto/${producto.id}`">
+  <img :src="getImagenUrl(producto.imagen)" class="card-img-top" :alt="producto.nombre" />
+</router-link>
           <div class="card-body text-center">
-            <h5 class="card-title">{{ producto.nombre }}</h5>
+            <h5 class="card-title">
+  <router-link :to="`/producto/${producto.id}`" class="text-dark text-decoration-none">
+    {{ producto.nombre }}
+  </router-link>
+</h5>
             <p class="card-text">{{ producto.descripcion }}</p>
             <p class="fw-bold text-primary">{{ producto.precio }} €</p>
 
@@ -41,8 +47,9 @@ import { defineProps, ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const props = defineProps(['agregarAlCarrito', 'user']);
-const productos = ref([]);
 const route = useRoute();
+
+const productos = ref([]);
 
 // Cargar productos desde backend
 function cargarProductos() {
@@ -54,29 +61,22 @@ function cargarProductos() {
 }
 
 onMounted(cargarProductos);
+watch(() => route.fullPath, cargarProductos);
 
-// Recargar si cambia la ruta (por volver de editar/crear)
-watch(() => route.fullPath, () => {
-  cargarProductos();
-});
-
-// Funciones para navegación admin
+// Funciones admin
 function goToAdd() {
   window.location.href = '/admin/productos/create';
 }
-
 function goToEdit(id) {
   window.location.href = `/admin/productos/${id}/edit`;
 }
-
 function goToDelete(id) {
   window.location.href = `/admin/productos/${id}/delete`;
 }
 
-// Mostrar imagen local o externa
+// Imagen desde internet o local
 function getImagenUrl(imagen) {
   if (!imagen) return '';
-  if (imagen.startsWith('http')) return imagen;
-  return '/' + imagen; // ← Para imágenes en public/storage
+  return imagen.startsWith('http') ? imagen : '/' + imagen;
 }
 </script>

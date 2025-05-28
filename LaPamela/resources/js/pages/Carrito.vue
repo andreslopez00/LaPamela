@@ -31,8 +31,6 @@
 import { ref } from 'vue'
 
 const carrito = ref([
-  { id: 1, nombre: 'Vela Procesional', precio: 15.00, cantidad: 2 },
-  { id: 2, nombre: 'Incienso Premium', precio: 9.99, cantidad: 1 }
 ])
 
 const totalCarrito = carrito.value.reduce((total, item) => total + item.precio * item.cantidad, 0);
