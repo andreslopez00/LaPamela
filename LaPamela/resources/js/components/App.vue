@@ -37,7 +37,8 @@
     </nav>
 
     <!-- Contenido principal -->
-    <main class="flex-fill container my-4">
+    <main class="flex-fill p-0 m-0 w-100">
+
       <router-view :agregarAlCarrito="agregarAlCarrito" />
     </main>
 
