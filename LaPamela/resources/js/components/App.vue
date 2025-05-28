@@ -37,10 +37,10 @@
     </nav>
 
     <!-- Contenido principal -->
-    <main class="flex-fill p-0 m-0 w-100">
+<main class="flex-fill p-0 m-0 w-100">
+  <router-view :agregarAlCarrito="agregarAlCarrito" :user="user" />
+</main>
 
-      <router-view :agregarAlCarrito="agregarAlCarrito" />
-    </main>
 
     <!-- Footer -->
     <footer class="footer mt-auto bg-dark text-light py-4">
@@ -90,24 +90,33 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 const logueado = ref(false);
+const user = ref(null); // ← Aquí guardaremos el usuario completo
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-import { useRouter } from 'vue-router'
-const router = useRouter()
+const router = useRouter();
 
 function irACheckout() {
-  router.push('/checkout')
+  router.push('/checkout');
 }
 
-fetch('/api/user')
-  .then(res => {
-    logueado.value = res.ok;
+// Obtener usuario autenticado
+fetch('/user-info')
+  .then(res => res.ok ? res.json() : null)
+  .then(data => {
+    if (data) {
+      user.value = data;
+      logueado.value = true;
+    } else {
+      logueado.value = false;
+    }
   })
   .catch(() => {
     logueado.value = false;
   });
 
+// Carrito
 const carrito = ref([]);
 
 // Cargar carrito desde localStorage
@@ -123,6 +132,7 @@ watch(carrito, () => {
   localStorage.setItem('carrito', JSON.stringify(carrito.value));
 }, { deep: true });
 
+// Funciones carrito
 function agregarAlCarrito(producto) {
   const encontrado = carrito.value.find(p => p.id === producto.id);
   if (encontrado) {

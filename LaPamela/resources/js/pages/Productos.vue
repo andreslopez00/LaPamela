@@ -1,6 +1,12 @@
 <template>
   <div class="container fade-in mt-5">
     <h2 class="text-center mb-5">Catálogo de Productos Semana Santa</h2>
+
+    <!-- Botón para admins -->
+    <div v-if="user?.email === 'admin@gmail.com'" class="text-end mb-4">
+      <button class="btn btn-primary" @click="goToAdd">➕ Añadir producto</button>
+    </div>
+
     <div class="row">
       <div
         class="col-md-4 mb-4"
@@ -8,14 +14,21 @@
         :key="producto.id"
       >
         <div class="card h-100">
-          <img :src="producto.imagen" class="card-img-top" :alt="producto.nombre" />
+          <img :src="getImagenUrl(producto.imagen)" class="card-img-top" :alt="producto.nombre" />
           <div class="card-body text-center">
             <h5 class="card-title">{{ producto.nombre }}</h5>
             <p class="card-text">{{ producto.descripcion }}</p>
             <p class="fw-bold text-primary">{{ producto.precio }} €</p>
-            <button class="btn btn-success" @click="agregarAlCarrito(producto)">
+
+            <button class="btn btn-success mb-2" @click="agregarAlCarrito(producto)">
               Añadir al carrito
             </button>
+
+            <!-- Botones para admins -->
+            <div v-if="user?.email === 'admin@gmail.com'" class="mt-2">
+              <button class="btn btn-warning btn-sm me-2" @click="goToEdit(producto.id)">Editar</button>
+              <button class="btn btn-danger btn-sm" @click="goToDelete(producto.id)">Eliminar</button>
+            </div>
           </div>
         </div>
       </div>
@@ -24,31 +37,46 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from 'vue'
+import { defineProps, ref, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
-const props = defineProps(['agregarAlCarrito'])
+const props = defineProps(['agregarAlCarrito', 'user']);
+const productos = ref([]);
+const route = useRoute();
 
-const productos = ref([
-  {
-    id: 1,
-    nombre: 'Vela Procesional',
-    descripcion: 'Vela blanca de cera pura para procesiones.',
-    precio: 15.00,
-    imagen: 'https://s10.s3c.es/imag/_v0/1600x873/a/a/c/ceraruso.jpeg'
-  },
-  {
-    id: 2,
-    nombre: 'Incienso Premium',
-    descripcion: 'Incienso tradicional de Semana Santa.',
-    precio: 9.99,
-    imagen: 'https://palaciodeincienso.com/cdn/shop/files/PACKSEMANASANTAENSEVILLA.jpg?v=1694464327'
-  },
-  {
-    id: 3,
-    nombre: 'Mantilla Española',
-    descripcion: 'Mantilla negra bordada para celebraciones religiosas.',
-    precio: 89.00,
-    imagen: 'https://images.ecestaticos.com/FljfWOexuoxoFalhzAaP1-WwBZI=/0x0:2272x1556/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2F9e0%2F3fb%2F024%2F9e03fb024161f82c8c5a1968fee15558.jpg'
-  }
-])
+// Cargar productos desde backend
+function cargarProductos() {
+  fetch('/productos-data')
+    .then(res => res.json())
+    .then(data => {
+      productos.value = data;
+    });
+}
+
+onMounted(cargarProductos);
+
+// Recargar si cambia la ruta (por volver de editar/crear)
+watch(() => route.fullPath, () => {
+  cargarProductos();
+});
+
+// Funciones para navegación admin
+function goToAdd() {
+  window.location.href = '/admin/productos/create';
+}
+
+function goToEdit(id) {
+  window.location.href = `/admin/productos/${id}/edit`;
+}
+
+function goToDelete(id) {
+  window.location.href = `/admin/productos/${id}/delete`;
+}
+
+// Mostrar imagen local o externa
+function getImagenUrl(imagen) {
+  if (!imagen) return '';
+  if (imagen.startsWith('http')) return imagen;
+  return '/' + imagen; // ← Para imágenes en public/storage
+}
 </script>
