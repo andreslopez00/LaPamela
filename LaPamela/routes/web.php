@@ -9,6 +9,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Models\Product;
 use App\Models\Order; 
+use App\Http\Controllers\ReviewController;
 
 // Devuelve 1 producto por ID
 Route::get('/producto-data/{id}', function ($id) {
@@ -93,3 +94,5 @@ Route::middleware(['auth'])->group(function () {
         return view('app');
     })->where('any', '.*');
 });
+Route::post('/resenas', [ReviewController::class, 'store'])->middleware('auth');
+Route::get('/resenas/{id}', [ReviewController::class, 'index']);
