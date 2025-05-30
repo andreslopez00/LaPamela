@@ -1,3 +1,4 @@
+
 import { createI18n } from 'vue-i18n'
 
 const messages = {
@@ -7,17 +8,17 @@ const messages = {
       productos: 'Productos',
       misPedidos: 'Mis pedidos',
       contacto: 'Contacto',
-      cerrarSesion: 'Cerrar sesión',
+      cerrarSesion: 'Cerrar sesión'
     },
     carrito: {
       titulo: 'Tu Carrito',
       vacio: 'El carrito está vacío.',
       total: 'Total',
       vaciar: 'Vaciar carrito',
-      pagar: 'Ir a pagar',
+      pagar: 'Ir a pagar'
     },
     footer: {
-      derechos: 'Todos los derechos reservados.',
+      derechos: 'Todos los derechos reservados.'
     }
   },
   en: {
@@ -26,28 +27,26 @@ const messages = {
       productos: 'Products',
       misPedidos: 'My Orders',
       contacto: 'Contact',
-      cerrarSesion: 'Log out',
+      cerrarSesion: 'Log Out'
     },
     carrito: {
       titulo: 'Your Cart',
-      vacio: 'Your cart is empty.',
+      vacio: 'The cart is empty.',
       total: 'Total',
-      vaciar: 'Clear cart',
-      pagar: 'Checkout',
+      vaciar: 'Empty cart',
+      pagar: 'Checkout'
     },
     footer: {
-      derechos: 'All rights reserved.',
+      derechos: 'All rights reserved.'
     }
   }
 }
 
-const idiomaPorDefecto = localStorage.getItem('idioma') || 'es'
+const idiomaGuardado = localStorage.getItem('idioma') || 'es'
 
-const i18n = createI18n({
+export default createI18n({
   legacy: false,
-  locale: idiomaPorDefecto,
+  locale: idiomaGuardado,
   fallbackLocale: 'es',
-  messages,
+  messages
 })
-
-export default i18n
