@@ -24,19 +24,8 @@ Route::get('/productos-data', function () {
 // Crear sesión de pago con Stripe
 Route::post('/crear-sesion-stripe', [StripeController::class, 'checkout']);
 
-// Guardar pedido tras el pago
-Route::post('/pedido', function (Request $request) {
-    $datos = $request->all();
+Route::post('/pedido', [PedidoController::class, 'procesar'])->middleware('auth');
 
-    Order::create([
-        'user_id' => Auth::id(),
-        'productos' => json_encode($datos['carrito']),
-        'total' => $datos['total'],
-        'estado' => 'Procesando',
-    ]);
-
-    return response()->json(['ok' => true]);
-})->middleware('auth');
 
 // Mis pedidos en formato JSON (para Vue)
 Route::get('/mis-pedidos', function () {
@@ -55,6 +44,7 @@ Route::get('/mis-pedidos', function () {
             ];
         });
 })->middleware('auth');
+
 
 
 // Registro personalizado

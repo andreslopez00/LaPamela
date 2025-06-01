@@ -3,31 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use PDF;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Order;
+use PDF;
 
 class PedidoController extends Controller
 {
     public function procesar(Request $request)
     {
         \Log::info('🧾 Pedido recibido', $request->all());
+
+        // Validación de datos
         $datos = $request->validate([
             'nombre' => 'required|string',
             'email' => 'required|email',
             'direccion' => 'required|string',
             'carrito' => 'required|array',
+            'total' => 'required|numeric',
         ]);
 
-        $total = collect($datos['carrito'])->sum(function ($item) {
-            return $item['precio'] * $item['cantidad'];
-        });
+        // Guardar pedido en la base de datos
+        Order::create([
+            'user_id' => Auth::id(),
+            'productos' => json_encode($datos['carrito']),
+            'total' => $datos['total'],
+            'estado' => 'Procesando',
+        ]);
 
+        // Generar PDF de la factura
         $pdf = PDF::loadView('factura', [
             'cliente' => $datos,
-            'total' => $total,
+            'total' => $datos['total'],
         ]);
 
-        // Enviar email con PDF adjunto
+        // Enviar correo con factura adjunta
         \Log::info('📧 Enviando correo a: ' . $datos['email']);
 
         Mail::send('emails.confirmacion', ['nombre' => $datos['nombre']], function ($message) use ($datos, $pdf) {
